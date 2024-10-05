@@ -454,9 +454,20 @@ export default class VideoReporter extends WdioReporter {
       browserName = `${deviceName.toUpperCase()}-${capabilities.platformName.toUpperCase()}`
     }
 
-    const testName = this.testName = generateFilename(this.options.maxTestNameCharacters, browserName, fullName)
-    this.frameNr = 0
-    this.recordingPath = path.resolve(this.#outputDir ?? this.options.outputDir, this.options.rawPath, testName)
+    if  (this.options.filenamePrefixSource === 'suite' &&
+        !this.isCucumberFramework) {
+        if (!this.testName?.includes(this.testNameStructure[0]
+          .replace(/%../g, '')
+          .replace(/\./g, '-')
+          .replace(/[/\\?%*:'|"<>()]/g, '')
+        )) {
+          this.testName = generateFilename(this.options.maxTestNameCharacters, browserName, this.testNameStructure[0])
+        }
+    } else {
+      this.testName = generateFilename(this.options.maxTestNameCharacters, browserName, fullName)
+      this.frameNr = 0
+    }
+    this.recordingPath = path.resolve(this.#outputDir ?? this.options.outputDir, this.options.rawPath, this.testName)
 
     fs.mkdirSync(this.recordingPath, { recursive: true })
   }
