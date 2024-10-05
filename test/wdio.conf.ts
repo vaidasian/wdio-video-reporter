@@ -17,7 +17,7 @@ export const config: WebdriverIO.Config = {
   // Some nice defaults
   // ==================
   specs: [
-    './specs/**/*.e2e.ts',
+    './specs/**/*.spec.ts',
   ],
   bail: 1,
   framework: 'mocha',

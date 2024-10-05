@@ -2,7 +2,7 @@ import { $, $$, browser, expect } from '@wdio/globals'
 
 describe('User interactions', () => {
   beforeEach(async () => {
-    await browser.url('https://the-internet.herokuapp.com/')
+    await browser.url(browser.options.baseUrl)
     const header = await $('h1.heading').getElement()
     await header.waitForDisplayed()
   })
@@ -12,7 +12,6 @@ describe('User interactions', () => {
   }
 
   it('should be able to use inputs', async () => {
-    // Open input
     const inputLink = await $('a=Inputs').getElement()
     await inputLink.click()
 

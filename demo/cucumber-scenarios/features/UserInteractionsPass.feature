@@ -1,12 +1,7 @@
 Feature: User interactions - Pass
 
-  Background:
-    Given I navigate to base url
-    And I close close ad-popups
-
-  Scenario: I should be able to edit inputs (should pass)
-    Given I open Basic Examples tab
-    And I open 'basic-first-form' demo
-    When I enter message 'Presidenten'
-    And I click 'Show Message'
-    Then My message 'Presidenten' should be displayed
+  Scenario: user should be able to use inputs (should pass)
+    Given user navigates to base url
+    When user selects input field
+    When user fills input field "12344321"
+    Then verify input field contains "12344321"

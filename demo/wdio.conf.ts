@@ -16,6 +16,7 @@ export const config: WebdriverIO.Config = {
   // ===============
   // Custom settings
   // ===============
+  baseUrl: `https://the-internet.herokuapp.com`,
   logLevel: 'info', // trace | debug | info | warn | error | silent
   outputDir: path.join(__dirname, '_results_'),
   reporters: [
@@ -24,7 +25,9 @@ export const config: WebdriverIO.Config = {
       saveAllVideos: false,       // If true, also saves videos for successful test cases
       videoSlowdownMultiplier: 3, // Higher to get slower videos, lower for faster videos [Value 1-100]
       videoRenderTimeout: 15000,      // milliseconds to wait for a video to finish rendering
-      videoFormat: 'webm'
+      videoFormat: 'webm',
+      filenamePrefixSource: 'suite',
+      onlyRecordLastFailure: true,
     }],
     ['allure', {
       outputDir: path.join(__dirname, '_results_/allure-raw')
@@ -43,15 +46,20 @@ export const config: WebdriverIO.Config = {
       'goog:chromeOptions': {
         args: [
           '--no-sandbox',
-          '--headless=new',
-          '--disable-gpu']
+          // '--headless=new',
+          '--disable-gpu'
+        ],
       },
     },
     {
       browserName: 'firefox',
       acceptInsecureCerts: true,
       'moz:firefoxOptions': {
-        args: ['-headless', '--no-sandbox', '--disable-gpu']
+        args: [
+          '-headless',
+          '--no-sandbox',
+          '--disable-gpu'
+        ],
       }
     },
   ],
@@ -60,13 +68,15 @@ export const config: WebdriverIO.Config = {
   // Some nice defaults
   // ==================
   specs: [
-    './specs/**/*.e2e.ts',
+    './specs/**/*.spec.ts',
   ],
-  bail: 1,
+  bail: 0,
   framework: 'jasmine',
   jasmineOpts: {
     defaultTimeoutInterval: 120000,
+    stopOnSpecFailure: true,
   },
+  specFileRetries: 0,
 
   onComplete: () => {
     const reportError = new Error('Could not generate Allure report')

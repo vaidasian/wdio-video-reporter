@@ -1,47 +1,77 @@
 import { Given, When, Then } from '@wdio/cucumber-framework'
-import { browser } from '@wdio/globals'
+import { $, $$, browser, expect } from '@wdio/globals'
 
-Given(/^I navigate to base url$/, async () => {
-  await browser.url('https://demo.seleniumeasy.com')
+async function getHeader() {
+  return await $('h3').getElement()
+}
+
+async function getInputField() {
+  return await $('input').getElement()
+}
+
+async function getDropDown() {
+  return await $('select#dropdown').getElement()
+}
+
+async function getScrolledParagraph() {
+  return await $$('div.jscroll-added').getElements()
+}
+
+Given('user navigates to base url', async (): Promise<void> => {
+  await browser.url(browser.options.baseUrl)
+  const header = await $('h1.heading').getElement()
+  await header.waitForDisplayed()
 })
 
-Given(/^I close close ad-popups$/, async () => {
-  const lightbox = await $('#at-cv-lightbox-close')
-  await lightbox.waitForExist()
-  await $(lightbox).click().catch(() => {
-    // ignore
-  })
+When('user selects input field', async (): Promise<void> => {
+  const inputLink = await $('a=Inputs').getElement()
+  await inputLink.click()
+  await (await getHeader()).waitForDisplayed()
 })
 
-Given(/^I open Basic Examples tab$/, async () => {
-  await $('#btn_basic_example').click()
+When('user fills input field {string}', async (inputValue: string): Promise<void> => {
+  await (await getInputField()).setValue(inputValue)
 })
 
-Given(/^I open Advanced Examples tab$/, async () => {
-  await $('#advanced_example').click()
+Then('verify input field contains {string}', async (inputValue: string): Promise<void> => {
+  await expect(await getInputField()).toHaveValue(inputValue)
 })
 
-When(/I open '(.+)' demo$/, async (demo) => {
-  await $(`.list-group-item[href*="${demo}"]`).click()
+When('user selects link to dropdown', async (): Promise<void> => {
+  const inputLink = await $('a=Dropdown').getElement()
+  await inputLink.click()
+  await (await getHeader()).waitForDisplayed()
 })
 
-When(/I enter message '(.+)'$/, async (message) => {
-  await $('#get-input input').setValue(message)
+When('user selects dropdown', async (): Promise<void> => {
+  await (await getDropDown()).click()
 })
 
-When(/I click 'Show Message'$/, async () => {
-  await $('#get-input button').click()
-  await $('#get-input button').click()
+When('user selects dropdown option {int}', async (dropdownOption: number): Promise<void> => {
+  const dropDownOptions = await $$('option').getElements()
+  await dropDownOptions[dropdownOption].click()
 })
 
-Then(/My message '(.+)' should be displayed$/, async (message) => {
-  await expect($('#user-message #display')).toHaveText(message)
+Then('verify dropdown option {string}', async (dropDownValue: string): Promise<void> => {
+  await expect(await getDropDown()).toHaveValue(dropDownValue)
 })
 
-When(/I click first slider$/, async () => {
-  await $('#slider1 input').click()
+When('user selects link to scroll', async (): Promise<void> => {
+  const inputLink = await $('a=Infinite Scroll').getElement()
+  await inputLink.click()
+  await (await getHeader()).waitForDisplayed()
 })
 
-Then(/Slider range should be '(.+)'$/, async (message) => {
-  await expect($('#slider1 #range')).toHaveText(message)
+When('user selects paragraph to scroll', async (): Promise<void> => {
+  for (let index = 0; index < 5; index++) {
+    const paragraphs = await getScrolledParagraph()
+    const lastParagraph = paragraphs[paragraphs.length - 1]
+    await lastParagraph.scrollIntoView(true)
+    await lastParagraph.click()
+    await browser.pause(1000)
+  }
+})
+
+Then('verify scrolled elements count is {int}', async (elementCount: number): Promise<void> => {
+  await expect(await getScrolledParagraph()).toBeElementsArrayOfSize(elementCount)
 })
