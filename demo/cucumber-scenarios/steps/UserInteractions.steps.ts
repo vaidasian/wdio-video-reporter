@@ -18,7 +18,7 @@ async function getScrolledParagraph() {
 }
 
 Given('user navigates to base url', async (): Promise<void> => {
-  await browser.url(browser.options.baseUrl)
+  await browser.url(`${browser.options.baseUrl}`)
   const header = await $('h1.heading').getElement()
   await header.waitForDisplayed()
 })

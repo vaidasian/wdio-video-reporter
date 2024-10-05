@@ -2,7 +2,7 @@ import { $, $$, browser, expect } from '@wdio/globals'
 
 describe('User interactions', () => {
   beforeEach(async () => {
-    await browser.url(browser.options.baseUrl)
+    await browser.url(`${browser.options.baseUrl}`)
     const header = await $('h1.heading').getElement()
     await header.waitForDisplayed()
   })

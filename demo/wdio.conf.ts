@@ -46,7 +46,7 @@ export const config: WebdriverIO.Config = {
       'goog:chromeOptions': {
         args: [
           '--no-sandbox',
-          // '--headless=new',
+          '--headless=new',
           '--disable-gpu'
         ],
       },
